@@ -6,7 +6,7 @@
 ** the type of a column.
 */
 
-#include "dataframe.h"
+#include "../include/dataframe.h"
 
 static int is_bool(char *str)
 {

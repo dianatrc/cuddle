@@ -13,6 +13,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include <math.h>
 
 typedef enum {
     BOOL,
@@ -36,11 +37,19 @@ typedef struct {
     int nb_columns;
 } dataframe_shape_t;
 
+// types.c
 column_type_t determine_str_type(char *str);
 void *convert_to_type(char *str, column_type_t type);
-
+// dataframe.c
+dataframe_t *create_df(void);
+void convert_data(dataframe_t *df);
+dataframe_t *df_read_csv(const char *filename, const char *separator);
+// data_manipulation.c
 void get_column_names(dataframe_t *df, FILE *fd, const char *separator);
 void read_lines(dataframe_t *df, FILE *fd, const char *separator);
 void determine_columns_type(dataframe_t *df);
+// basics.c
+dataframe_shape_t df_shape(dataframe_t *df);
+void df_info(dataframe_t *df);
 
 #endif

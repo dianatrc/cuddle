@@ -12,7 +12,9 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRC = src/main.c \
 	src/types.c \
-	src/dataframe.c
+	src/dataframe.c \
+	src/data_manipulation.c \
+	src/basics.c
 
 OBJ = $(SRC:.c=.o)
 NAME = cuddle
