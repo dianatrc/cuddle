@@ -79,7 +79,7 @@ static void print_cell(FILE *fd, dataframe_t *df, int i, int j)
     if (df->column_types[j] == STRING)
         fprintf(fd, "%s", (char *)df->data[i][j]);
     if (df->column_types[j] == FLOAT)
-        fprintf(fd, "%f", *(float *)df->data[i][j]);
+        fprintf(fd, "%.2f", *(float *)df->data[i][j]);
     if (df->column_types[j] == INT)
         fprintf(fd, "%d", *(int *)df->data[i][j]);
     if (df->column_types[j] == UINT)

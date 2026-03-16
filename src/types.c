@@ -82,10 +82,10 @@ column_type_t determine_str_type(char *str)
         return BOOL;
     if (is_float(str))
         return FLOAT;
-    if (is_int(str))
-        return INT;
     if (is_uint(str))
         return UINT;
+    if (is_int(str))
+        return INT;
     if (is_string(str))
         return STRING;
     return UNDEFINED;
