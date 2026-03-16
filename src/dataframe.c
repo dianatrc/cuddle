@@ -1,12 +1,12 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Functions to work with
 ** the dataframe.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 dataframe_t *create_df(void)
 {

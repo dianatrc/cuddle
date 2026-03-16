@@ -1,26 +1,26 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Main entry point for the
-** cuddle bootstrap.
+** cuddle project.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
-int main(int argc, char **argv)
+int main(void)
 {
-    dataframe_t *df;
+    dataframe_t *df = df_read_csv("data.csv", ",");
+    dataframe_t *sorted;
     dataframe_shape_t shape;
 
-    if (argc < 2)
-        return 84;
-    df = df_read_csv(argv[1], ",");
     if (!df)
         return 84;
     df_info(df);
     shape = df_shape(df);
     printf("Shape: %d rows, %d columns\n", shape.nb_rows, shape.nb_columns);
     df_describe(df);
+    sorted = df_sort(df, "age", compare_int);
+    df_describe(sorted);
     return 0;
 }

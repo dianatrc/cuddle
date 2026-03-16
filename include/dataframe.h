@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Main header file for
 ** structures and function declarations.
@@ -14,6 +14,7 @@
     #include <stdlib.h>
     #include <string.h>
     #include <math.h>
+    #include <stdbool.h>
 
 typedef enum {
     BOOL,
@@ -57,8 +58,15 @@ void get_column_names(dataframe_t *df, FILE *fd, const char *separator);
 void read_lines(dataframe_t *df, FILE *fd, const char *separator);
 void determine_columns_type(dataframe_t *df);
 // basics.c
+dataframe_t *df_head(dataframe_t *df, int nb_rows);
 dataframe_shape_t df_shape(dataframe_t *df);
 void df_info(dataframe_t *df);
 void df_describe(dataframe_t *df);
+// sorting.c
+bool compare_int(void *value1, void *value2);
+bool compare_float(void *value1, void *value2);
+bool compare_string(void *value1, void *value2);
+dataframe_t *df_sort(dataframe_t *df, const char *column,
+    bool (*sort_func)(void *value1, void *value2));
 
 #endif

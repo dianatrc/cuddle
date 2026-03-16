@@ -1,12 +1,12 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Functions to work with
 ** the rows and columns from the file.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 static int count_columns(char *line, const char *separator)
 {

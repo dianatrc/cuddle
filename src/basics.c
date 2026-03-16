@@ -1,18 +1,22 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Main entry point for the
-** cuddle bootstrap.
+** cuddle project.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 static void copy_data(dataframe_t *new_df, dataframe_t *df, int i)
 {
     int size;
 
     for (int j = 0; j < df->nb_columns; j++) {
+        if (!df->data[i][j]) {
+            new_df->data[i][j] = NULL;
+            continue;
+        }
         if (new_df->column_types[j] == STRING) {
             new_df->data[i][j] = strdup((char *)df->data[i][j]);
             continue;
@@ -22,7 +26,8 @@ static void copy_data(dataframe_t *new_df, dataframe_t *df, int i)
         else
             size = sizeof(int);
         new_df->data[i][j] = malloc(size);
-        memcpy(new_df->data[i][j], df->data[i][j], size);
+        if (new_df->data[i][j])
+            memcpy(new_df->data[i][j], df->data[i][j], size);
     }
 }
 
