@@ -5,21 +5,13 @@
 ** Data filtering
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 bool filter_function(void *value)
 {
     if (!value)
         return false;
     return *(int *)value > 30;
-}
-
-int get_column_index(dataframe_t *df, const char *column)
-{
-    for (int i = 0; i < df->nb_columns; i++)
-        if (strcmp(df->column_names[i], column) == 0)
-            return i;
-    return -1;
 }
 
 static int add_filtered_row(dataframe_t *new_df, dataframe_t *df,

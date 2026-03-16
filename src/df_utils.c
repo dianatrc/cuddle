@@ -1,11 +1,11 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
-** Dataframe utilities
+** Dataframe utilities.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 void copy_data(dataframe_t *new_df, int i_new_df,
     dataframe_t *df, int i_old_df)
@@ -13,6 +13,10 @@ void copy_data(dataframe_t *new_df, int i_new_df,
     int size;
 
     for (int j = 0; j < df->nb_columns; j++) {
+        if (!df->data[i_old_df][j]) {
+            new_df->data[i_new_df][j] = NULL;
+            continue;
+        }
         if (new_df->column_types[j] == STRING) {
             new_df->data[i_new_df][j] = strdup((char *)df->data[i_old_df][j]);
             continue;
@@ -22,7 +26,8 @@ void copy_data(dataframe_t *new_df, int i_new_df,
         else
             size = sizeof(int);
         new_df->data[i_new_df][j] = malloc(size);
-        memcpy(new_df->data[i_new_df][j], df->data[i_old_df][j], size);
+        if (new_df->data[i_new_df][j])
+            memcpy(new_df->data[i_new_df][j], df->data[i_old_df][j], size);
     }
 }
 

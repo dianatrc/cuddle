@@ -1,12 +1,12 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Main entry point for the
-** cuddle bootstrap.
+** cuddle project.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 dataframe_t *df_head(dataframe_t *df, int nb_rows)
 {

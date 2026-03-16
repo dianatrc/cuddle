@@ -1,12 +1,12 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Includes functions to determine
 ** the type of a column.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 static int is_bool(char *str)
 {

@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Main header file for
 ** structures and function declarations.
@@ -59,21 +59,26 @@ int df_write_csv(dataframe_t *df, const char *filename);
 void get_column_names(dataframe_t *df, FILE *fd, const char *separator);
 void read_lines(dataframe_t *df, FILE *fd, const char *separator);
 void determine_columns_type(dataframe_t *df);
+int get_column_index(dataframe_t *df, const char *column);
 // basics.c
 dataframe_t *df_head(dataframe_t *df, int nb_rows);
 dataframe_t *df_tail(dataframe_t *df, int nb_rows);
 dataframe_shape_t df_shape(dataframe_t *df);
 void df_info(dataframe_t *df);
 void df_describe(dataframe_t *df);
-// filtering.c
+// sorting.c
+bool compare_int(void *value1, void *value2);
+bool compare_float(void *value1, void *value2);
+bool compare_string(void *value1, void *value2);
+dataframe_t *df_sort(dataframe_t *df, const char *column,
+    bool (*sort_func)(void *value1, void *value2));
+// filter.c
 bool filter_function(void *value);
-int get_column_index(dataframe_t *df, const char *column);
 dataframe_t *df_filter(dataframe_t *df, const char *column,
     bool (*filter_function)(void *value));
 // df_utils.c
 void copy_data(dataframe_t *new_df, int i_new_df,
     dataframe_t *df, int i_old_df);
 dataframe_t *init_new_df(dataframe_t *df, int nb_rows);
-
 
 #endif

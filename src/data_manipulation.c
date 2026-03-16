@@ -1,12 +1,12 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Functions to work with
 ** the rows and columns from the file.
 */
 
-#include "../include/dataframe.h"
+#include "dataframe.h"
 
 static int count_columns(char *line, const char *separator)
 {
@@ -103,4 +103,12 @@ void determine_columns_type(dataframe_t *df)
     for (int col = 0; col < df->nb_columns; col++) {
         df->column_types[col] = get_column_type(df, col);
     }
+}
+
+int get_column_index(dataframe_t *df, const char *column)
+{
+    for (int i = 0; i < df->nb_columns; i++)
+        if (strcmp(df->column_names[i], column) == 0)
+            return i;
+    return -1;
 }
