@@ -14,6 +14,7 @@
     #include <stdlib.h>
     #include <string.h>
     #include <math.h>
+    #include <stdbool.h>
 
 typedef enum {
     BOOL,
@@ -37,6 +38,14 @@ typedef struct {
     int nb_columns;
 } dataframe_shape_t;
 
+typedef struct {
+    int count;
+    double mean;
+    double std;
+    double min;
+    double max;
+} statistics_t;
+
 // types.c
 column_type_t determine_str_type(char *str);
 void *convert_to_type(char *str, column_type_t type);
@@ -55,5 +64,16 @@ dataframe_t *df_head(dataframe_t *df, int nb_rows);
 dataframe_t *df_tail(dataframe_t *df, int nb_rows);
 dataframe_shape_t df_shape(dataframe_t *df);
 void df_info(dataframe_t *df);
+void df_describe(dataframe_t *df);
+// filtering.c
+bool filter_function(void *value);
+int get_column_index(dataframe_t *df, const char *column);
+dataframe_t *df_filter(dataframe_t *df, const char *column,
+    bool (*filter_function)(void *value));
+// df_utils.c
+void copy_data(dataframe_t *new_df, int i_new_df,
+    dataframe_t *df, int i_old_df);
+dataframe_t *init_new_df(dataframe_t *df, int nb_rows);
+
 
 #endif
