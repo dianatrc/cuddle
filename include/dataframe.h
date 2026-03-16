@@ -37,6 +37,14 @@ typedef struct {
     int nb_columns;
 } dataframe_shape_t;
 
+typedef struct {
+    int count;
+    double mean;
+    double std;
+    double min;
+    double max;
+} statistics_t;
+
 // types.c
 column_type_t determine_str_type(char *str);
 void *convert_to_type(char *str, column_type_t type);
@@ -51,5 +59,6 @@ void determine_columns_type(dataframe_t *df);
 // basics.c
 dataframe_shape_t df_shape(dataframe_t *df);
 void df_info(dataframe_t *df);
+void df_describe(dataframe_t *df);
 
 #endif

@@ -9,6 +9,7 @@
 CC = epiclang
 CPPFLAGS = -I./include
 CFLAGS = -Wall -Wextra -Werror
+LDFLAGS = -lm
 
 SRC = src/main.c \
 	src/types.c \
@@ -22,7 +23,7 @@ NAME = cuddle
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+	$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(LDFLAGS)
 
 clean:
 	rm -f $(OBJ)
