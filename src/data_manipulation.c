@@ -62,9 +62,11 @@ void read_lines(dataframe_t *df, FILE *fd, const char *separator)
     char line[1024];
 
     while (fgets(line, sizeof(line), fd)) {
+        if (line[0] == '\n' || line[0] == '\0')
+            continue;
         line[strcspn(line, "\n")] = '\0';
         df->data = realloc(df->data, sizeof(void **) * (df->nb_rows + 1));
-        df->data[df->nb_rows] = malloc(sizeof(void *) * df->nb_columns);
+        df->data[df->nb_rows] = calloc(df->nb_columns, sizeof(void *));
         process_row(df, line, separator);
         df->nb_rows++;
     }

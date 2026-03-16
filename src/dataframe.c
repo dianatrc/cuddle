@@ -22,6 +22,23 @@ dataframe_t *create_df(void)
     return df;
 }
 
+void free_df(dataframe_t *df)
+{
+    if (!df)
+        return;
+    for (int i = 0; i < df->nb_columns; i++)
+        free(df->column_names[i]);
+    free(df->column_names);
+    free(df->column_types);
+    for (int i = 0; df->data && i < df->nb_rows; i++) {
+        for (int j = 0; df->data[i] && j < df->nb_columns; j++)
+            free(df->data[i][j]);
+        free(df->data[i]);
+    }
+    free(df->data);
+    free(df);
+}
+
 void convert_data(dataframe_t *df)
 {
     char *tmp;
@@ -53,4 +70,50 @@ dataframe_t *df_read_csv(const char *filename, const char *separator)
     convert_data(df);
     fclose(fd);
     return df;
+}
+
+static void print_cell(FILE *fd, dataframe_t *df, int i, int j)
+{
+    if (df->data[i][j] == NULL)
+        return;
+    if (df->column_types[j] == STRING)
+        fprintf(fd, "%s", (char *)df->data[i][j]);
+    if (df->column_types[j] == FLOAT)
+        fprintf(fd, "%f", *(float *)df->data[i][j]);
+    if (df->column_types[j] == INT)
+        fprintf(fd, "%d", *(int *)df->data[i][j]);
+    if (df->column_types[j] == UINT)
+        fprintf(fd, "%u", *(unsigned int *)df->data[i][j]);
+    if (df->column_types[j] == BOOL && *(int *)df->data[i][j] == 1)
+        fprintf(fd, "true");
+    else if (df->column_types[j] == BOOL && *(int *)df->data[i][j] == 0)
+        fprintf(fd, "false");
+}
+
+static void write_row(FILE *fd, dataframe_t *df, int i)
+{
+    for (int j = 0; j < df->nb_columns; j++) {
+        print_cell(fd, df, i, j);
+        if (j < df->nb_columns - 1)
+            fprintf(fd, ",");
+        else
+            fprintf(fd, "\n");
+    }
+}
+
+int df_write_csv(dataframe_t *df, const char *filename)
+{
+    FILE *fd = fopen(filename, "w");
+
+    if (!fd || !df)
+        return -1;
+    for (int i = 0; i < df->nb_columns; i++)
+        if (i < df->nb_columns - 1)
+            fprintf(fd, "%s,", df->column_names[i]);
+        else
+            fprintf(fd, "%s\n", df->column_names[i]);
+    for (int i = 0; i < df->nb_rows; i++)
+        write_row(fd, df, i);
+    fclose(fd);
+    return 0;
 }
