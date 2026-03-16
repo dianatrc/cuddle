@@ -80,5 +80,10 @@ dataframe_t *df_filter(dataframe_t *df, const char *column,
 void copy_data(dataframe_t *new_df, int i_new_df,
     dataframe_t *df, int i_old_df);
 dataframe_t *init_new_df(dataframe_t *df, int nb_rows);
+// aggregation.c
+void *agg_sum_int(void **values, int nb_values);
+void *agg_sum_float(void **values, int nb_values);
+dataframe_t *df_groupby(dataframe_t *df, const char *aggregate_by,
+    const char **to_aggregate, void *(*agg_func)(void **values, int nb_values));
 
 #endif

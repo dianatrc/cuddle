@@ -18,7 +18,8 @@ SRC = src/main.c \
 	src/basics.c \
 	src/sorting.c \
 	src/filter.c \
-	src/df_utils.c
+	src/df_utils.c \
+	src/aggregation.c
 
 OBJ = $(SRC:.c=.o)
 NAME = cuddle
