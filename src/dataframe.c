@@ -22,7 +22,7 @@ dataframe_t *create_df(void)
     return df;
 }
 
-void free_df(dataframe_t *df)
+void df_free(dataframe_t *df)
 {
     if (!df)
         return;

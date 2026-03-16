@@ -51,7 +51,7 @@ column_type_t determine_str_type(char *str);
 void *convert_to_type(char *str, column_type_t type);
 // dataframe.c
 dataframe_t *create_df(void);
-void free_df(dataframe_t *df);
+void df_free(dataframe_t *df);
 void convert_data(dataframe_t *df);
 dataframe_t *df_read_csv(const char *filename, const char *separator);
 int df_write_csv(dataframe_t *df, const char *filename);
@@ -80,5 +80,9 @@ dataframe_t *df_filter(dataframe_t *df, const char *column,
 void copy_data(dataframe_t *new_df, int i_new_df,
     dataframe_t *df, int i_old_df);
 dataframe_t *init_new_df(dataframe_t *df, int nb_rows);
+// transformation.c
+void *multiply(void *value);
+dataframe_t *df_apply(dataframe_t *df, const char *column,
+    void *(*apply_func)(void *value));
 
 #endif

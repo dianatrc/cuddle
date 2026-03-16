@@ -48,7 +48,7 @@ dataframe_t *df_filter(dataframe_t *df, const char *column,
     for (int i = 0; i < df->nb_rows; i++)
         if (filter_function(df->data[i][column_index]) &&
             !(add_filtered_row(new_df, df, i))) {
-            free_df(new_df);
+            df_free(new_df);
             return NULL;
         }
     return new_df;

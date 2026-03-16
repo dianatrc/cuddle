@@ -11,9 +11,9 @@
 int main(void)
 {
     dataframe_t *df = df_read_csv("data.csv", ",");
-    dataframe_t *sorted;
     dataframe_shape_t shape;
     dataframe_t *filtered;
+    dataframe_t *transformed;
 
     if (!df)
         return 84;
@@ -24,10 +24,10 @@ int main(void)
     if (df_write_csv(filtered, "out") == -1)
         return 84;
     df_describe(df);
-    sorted = df_sort(df, "age", compare_int);
-    df_write_csv(sorted, "data.out");
-    free_df(df);
-    free_df(sorted);
-    free_df(filtered);
+    transformed = df_apply(df, "age", multiply);
+    df_write_csv(transformed, "data.out");
+    df_free(df);
+    df_free(filtered);
+    free(transformed);
     return 0;
 }
