@@ -1,8 +1,8 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
-** Data filtering
+** Data filtering functions.
 */
 
 #include "dataframe.h"
