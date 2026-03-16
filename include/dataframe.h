@@ -51,11 +51,12 @@ column_type_t determine_str_type(char *str);
 void *convert_to_type(char *str, column_type_t type);
 // dataframe.c
 dataframe_t *create_df(void);
-void free_df(dataframe_t *df);
-void convert_data(dataframe_t *df);
 dataframe_t *df_read_csv(const char *filename, const char *separator);
 int df_write_csv(dataframe_t *df, const char *filename);
-// data_manipulation.c
+void copy_data(dataframe_t *new_df, int i_new_df,
+    dataframe_t *df, int i_old_df);
+dataframe_t *init_new_df(dataframe_t *df, int nb_rows);
+// rows_and_columns.c
 void get_column_names(dataframe_t *df, FILE *fd, const char *separator);
 void read_lines(dataframe_t *df, FILE *fd, const char *separator);
 void determine_columns_type(dataframe_t *df);
@@ -76,9 +77,14 @@ dataframe_t *df_sort(dataframe_t *df, const char *column,
 bool filter_function(void *value);
 dataframe_t *df_filter(dataframe_t *df, const char *column,
     bool (*filter_function)(void *value));
-// df_utils.c
-void copy_data(dataframe_t *new_df, int i_new_df,
-    dataframe_t *df, int i_old_df);
-dataframe_t *init_new_df(dataframe_t *df, int nb_rows);
+// transformation.c
+void *multiply(void *value);
+dataframe_t *df_apply(dataframe_t *df, const char *column,
+    void *(*apply_func)(void *value));
+// utilities.c
+void *df_get_value(dataframe_t *df, int row, const char *column);
+void **df_get_values(dataframe_t *df, const char *column);
+void **df_get_unique_values(dataframe_t *df, const char *column);
+void df_free(dataframe_t *df);
 
 #endif
