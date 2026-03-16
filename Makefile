@@ -19,7 +19,7 @@ SRC = src/main.c \
 	src/sorting.c \
 	src/filter.c \
 	src/transformation.c \
-	src/utilities.c
+	src/utilities.c \
 
 OBJ = $(SRC:.c=.o)
 NAME = cuddle
