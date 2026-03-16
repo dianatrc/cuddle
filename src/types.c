@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Includes functions to determine
 ** the type of a column.
@@ -93,24 +93,39 @@ column_type_t determine_str_type(char *str)
 
 static void *convert_to_int(char *str)
 {
-    int *value = malloc(sizeof(int));
+    int *value;
 
+    if (!str || str[0] == '\0')
+        return NULL;
+    value = malloc(sizeof(int));
+    if (!value)
+        return NULL;
     *value = atoi(str);
     return (void *)value;
 }
 
 static void *convert_to_float(char *str)
 {
-    float *value = malloc(sizeof(float));
+    float *value;
 
+    if (!str || str[0] == '\0')
+        return NULL;
+    value = malloc(sizeof(float));
+    if (!value)
+        return NULL;
     *value = atof(str);
     return (void *)value;
 }
 
 static void *convert_to_bool(char *str)
 {
-    int *value = malloc(sizeof(int));
+    int *value;
 
+    if (!str || str[0] == '\0')
+        return NULL;
+    value = malloc(sizeof(int));
+    if (!value)
+        return NULL;
     if (strcmp(str, "true") == 0)
         *value = 1;
     else
@@ -120,6 +135,8 @@ static void *convert_to_bool(char *str)
 
 void *convert_to_type(char *str, column_type_t type)
 {
+    if (!str)
+        return NULL;
     if (type == INT || type == UINT)
         return convert_to_int(str);
     if (type == FLOAT)

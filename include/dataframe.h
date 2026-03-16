@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Main header file for
 ** structures and function declarations.
@@ -13,6 +13,8 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include <math.h>
+    #include <stdbool.h>
 
 typedef enum {
     BOOL,
@@ -36,11 +38,47 @@ typedef struct {
     int nb_columns;
 } dataframe_shape_t;
 
+typedef struct {
+    int count;
+    double mean;
+    double std;
+    double min;
+    double max;
+} statistics_t;
+
+// types.c
 column_type_t determine_str_type(char *str);
 void *convert_to_type(char *str, column_type_t type);
-
+// dataframe.c
+dataframe_t *create_df(void);
+void free_df(dataframe_t *df);
+void convert_data(dataframe_t *df);
+dataframe_t *df_read_csv(const char *filename, const char *separator);
+int df_write_csv(dataframe_t *df, const char *filename);
+// data_manipulation.c
 void get_column_names(dataframe_t *df, FILE *fd, const char *separator);
 void read_lines(dataframe_t *df, FILE *fd, const char *separator);
 void determine_columns_type(dataframe_t *df);
+int get_column_index(dataframe_t *df, const char *column);
+// basics.c
+dataframe_t *df_head(dataframe_t *df, int nb_rows);
+dataframe_t *df_tail(dataframe_t *df, int nb_rows);
+dataframe_shape_t df_shape(dataframe_t *df);
+void df_info(dataframe_t *df);
+void df_describe(dataframe_t *df);
+// sorting.c
+bool compare_int(void *value1, void *value2);
+bool compare_float(void *value1, void *value2);
+bool compare_string(void *value1, void *value2);
+dataframe_t *df_sort(dataframe_t *df, const char *column,
+    bool (*sort_func)(void *value1, void *value2));
+// filter.c
+bool filter_function(void *value);
+dataframe_t *df_filter(dataframe_t *df, const char *column,
+    bool (*filter_function)(void *value));
+// df_utils.c
+void copy_data(dataframe_t *new_df, int i_new_df,
+    dataframe_t *df, int i_old_df);
+dataframe_t *init_new_df(dataframe_t *df, int nb_rows);
 
 #endif

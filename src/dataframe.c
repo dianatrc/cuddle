@@ -1,104 +1,119 @@
 /*
 ** EPITECH PROJECT, 2026
-** Cuddle - Bootstrap
+** Cuddle
 ** File description:
 ** Functions to work with
-** the rows and columns from the file.
+** the dataframe.
 */
 
 #include "dataframe.h"
 
-static int count_columns(char *line, const char *separator)
+dataframe_t *create_df(void)
 {
-    int count = 0;
-    char *copy = strdup(line);
-    char *tmp = copy;
-    char *token = strsep(&tmp, separator);
+    dataframe_t *df = malloc(sizeof(dataframe_t));
 
-    while (token) {
-        count++;
-        token = strsep(&tmp, separator);
-    }
-    free(copy);
-    return count;
+    if (!df)
+        return NULL;
+    df->nb_rows = 0;
+    df->nb_columns = 0;
+    df->column_names = NULL;
+    df->column_types = NULL;
+    df->data = NULL;
+    return df;
 }
 
-void get_column_names(dataframe_t *df, FILE *fd, const char *separator)
+void free_df(dataframe_t *df)
 {
-    char line[1024];
-    char *token;
-    int i = 0;
-    char *tmp = line;
+    if (!df)
+        return;
+    for (int i = 0; i < df->nb_columns; i++)
+        free(df->column_names[i]);
+    free(df->column_names);
+    free(df->column_types);
+    for (int i = 0; df->data && i < df->nb_rows; i++) {
+        for (int j = 0; df->data[i] && j < df->nb_columns; j++)
+            free(df->data[i][j]);
+        free(df->data[i]);
+    }
+    free(df->data);
+    free(df);
+}
 
-    if (fgets(line, sizeof(line), fd)) {
-        line[strcspn(line, "\n")] = '\0';
-        df->nb_columns = count_columns(line, separator);
-        df->column_names = malloc(sizeof(char *) * df->nb_columns);
-        df->column_types = malloc(sizeof(column_type_t) * df->nb_columns);
-        token = strsep(&tmp, separator);
-        while (token && i < df->nb_columns) {
-            df->column_names[i] = strdup(token);
-            i++;
-            token = strsep(&tmp, separator);
+void convert_data(dataframe_t *df)
+{
+    char *tmp;
+
+    for (int i = 0; i < df->nb_rows; i++) {
+        for (int j = 0; j < df->nb_columns; j++) {
+            tmp = df->data[i][j];
+            df->data[i][j] = convert_to_type(tmp, df->column_types[j]);
+            free(tmp);
         }
     }
 }
 
-static void process_row(dataframe_t *df, char *line, const char *separator)
+dataframe_t *df_read_csv(const char *filename, const char *separator)
 {
-    char *tmp = line;
-    char *token = strsep(&tmp, separator);
-    int current_column = 0;
+    FILE *fd = fopen(filename, "r");
+    dataframe_t *df;
 
-    while (token && current_column < df->nb_columns) {
-        df->data[df->nb_rows][current_column] = strdup(token);
-        current_column++;
-        token = strsep(&tmp, separator);
+    if (!fd)
+        return NULL;
+    df = create_df();
+    if (!df) {
+        fclose(fd);
+        return NULL;
+    }
+    get_column_names(df, fd, separator);
+    read_lines(df, fd, separator);
+    determine_columns_type(df);
+    convert_data(df);
+    fclose(fd);
+    return df;
+}
+
+static void print_cell(FILE *fd, dataframe_t *df, int i, int j)
+{
+    if (df->data[i][j] == NULL)
+        return;
+    if (df->column_types[j] == STRING)
+        fprintf(fd, "%s", (char *)df->data[i][j]);
+    if (df->column_types[j] == FLOAT)
+        fprintf(fd, "%f", *(float *)df->data[i][j]);
+    if (df->column_types[j] == INT)
+        fprintf(fd, "%d", *(int *)df->data[i][j]);
+    if (df->column_types[j] == UINT)
+        fprintf(fd, "%u", *(unsigned int *)df->data[i][j]);
+    if (df->column_types[j] == BOOL && *(int *)df->data[i][j] == 1)
+        fprintf(fd, "true");
+    else if (df->column_types[j] == BOOL && *(int *)df->data[i][j] == 0)
+        fprintf(fd, "false");
+}
+
+static void write_row(FILE *fd, dataframe_t *df, int i)
+{
+    for (int j = 0; j < df->nb_columns; j++) {
+        print_cell(fd, df, i, j);
+        if (j < df->nb_columns - 1)
+            fprintf(fd, ",");
+        else
+            fprintf(fd, "\n");
     }
 }
 
-void read_lines(dataframe_t *df, FILE *fd, const char *separator)
+int df_write_csv(dataframe_t *df, const char *filename)
 {
-    char line[1024];
+    FILE *fd = fopen(filename, "w");
 
-    while (fgets(line, sizeof(line), fd)) {
-        line[strcspn(line, "\n")] = '\0';
-        df->data = realloc(df->data, sizeof(void **) * (df->nb_rows + 1));
-        df->data[df->nb_rows] = malloc(sizeof(void *) * df->nb_columns);
-        process_row(df, line, separator);
-        df->nb_rows++;
-    }
-}
-
-static column_type_t mix_types(column_type_t type1, column_type_t type2)
-{
-    if (type1 == UNDEFINED)
-        return type2;
-    if (type2 == UNDEFINED)
-        return type1;
-    if (type1 == type2)
-        return type1;
-    if ((type1 == INT || type1 == UINT || type1 == FLOAT)
-        && (type2 == INT || type2 == UINT || type2 == FLOAT))
-        return FLOAT;
-    return STRING;
-}
-
-static column_type_t get_column_type(dataframe_t *df, int col)
-{
-    column_type_t type = determine_str_type((char *)df->data[0][col]);
-    column_type_t current_type;
-
-    for (int row = 1; row < df->nb_rows; row++) {
-        current_type = determine_str_type((char *)df->data[row][col]);
-        type = mix_types(type, current_type);
-    }
-    return type;
-}
-
-void determine_columns_type(dataframe_t *df)
-{
-    for (int col = 0; col < df->nb_columns; col++) {
-        df->column_types[col] = get_column_type(df, col);
-    }
+    if (!fd || !df)
+        return -1;
+    for (int i = 0; i < df->nb_columns; i++)
+        if (i < df->nb_columns - 1)
+            fprintf(fd, "%s,", df->column_names[i]);
+        else
+            fprintf(fd, "%s\n", df->column_names[i]);
+    for (int i = 0; i < df->nb_rows; i++)
+        write_row(fd, df, i);
+    fclose(fd);
+    return 0;
 }
