@@ -8,14 +8,6 @@
 
 #include "dataframe.h"
 
-static int get_column_index(dataframe_t *df, const char *column)
-{
-    for (int i = 0; i < df->nb_columns; i++)
-        if (strcmp(df->column_names[i], column) == 0)
-            return i;
-    return -1;
-}
-
 static void swap_rows(dataframe_t *df, int a, int b)
 {
     void **tmp = df->data[a];

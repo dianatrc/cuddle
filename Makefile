@@ -16,7 +16,9 @@ SRC = src/main.c \
 	src/dataframe.c \
 	src/data_manipulation.c \
 	src/basics.c \
-	src/sorting.c
+	src/sorting.c \
+	src/filter.c \
+	src/df_utils.c
 
 OBJ = $(SRC:.c=.o)
 NAME = cuddle
