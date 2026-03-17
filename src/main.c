@@ -8,7 +8,7 @@
 
 #include "dataframe.h"
 
-int main(void)
+static void test_get_values(dataframe_t *df, void **values)
 {
     dataframe_t *df = df_read_csv("utils/data.csv", ",");
     dataframe_t *new_df;

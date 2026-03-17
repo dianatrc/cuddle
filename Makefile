@@ -6,13 +6,13 @@
 ## to handle compilation and cleaning.
 ##
 
+NAME = libcuddle.a
 CC = epiclang
 CPPFLAGS = -I./include
 CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -lm
 
-SRC = src/main.c \
-	src/types.c \
+SRC = src/types.c \
 	src/dataframe.c \
 	src/rows_and_columns.c \
 	src/basics.c \
@@ -24,12 +24,12 @@ SRC = src/main.c \
 	src/helper.c
 
 OBJ = $(SRC:.c=.o)
-NAME = cuddle
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(LDFLAGS)
+	ar rc $(NAME) $(OBJ)
+	ranlib $(NAME)
 
 clean:
 	rm -f $(OBJ)
@@ -37,4 +37,4 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 
-re: fclean all
+re: all clean fclean re
