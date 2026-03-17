@@ -107,6 +107,8 @@ void determine_columns_type(dataframe_t *df)
 
 int get_column_index(dataframe_t *df, const char *column)
 {
+    if (!df || !column)
+        return -1;
     for (int i = 0; i < df->nb_columns; i++)
         if (strcmp(df->column_names[i], column) == 0)
             return i;
