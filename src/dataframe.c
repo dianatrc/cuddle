@@ -16,6 +16,7 @@ dataframe_t *create_df(void)
         return NULL;
     df->nb_rows = 0;
     df->nb_columns = 0;
+    df->separator = NULL;
     df->column_names = NULL;
     df->column_types = NULL;
     df->data = NULL;
@@ -42,11 +43,14 @@ dataframe_t *df_read_csv(const char *filename, const char *separator)
 
     if (!fd)
         return NULL;
+    if (!separator)
+        separator = ",";
     df = create_df();
     if (!df) {
         fclose(fd);
         return NULL;
     }
+    df->separator = strdup(separator);
     get_column_names(df, fd, separator);
     read_lines(df, fd, separator);
     determine_columns_type(df);
@@ -62,7 +66,7 @@ static void print_cell(FILE *fd, dataframe_t *df, int i, int j)
     if (df->column_types[j] == STRING)
         fprintf(fd, "%s", (char *)df->data[i][j]);
     if (df->column_types[j] == FLOAT)
-        fprintf(fd, "%f", *(float *)df->data[i][j]);
+        fprintf(fd, "%.2f", *(float *)df->data[i][j]);
     if (df->column_types[j] == INT)
         fprintf(fd, "%d", *(int *)df->data[i][j]);
     if (df->column_types[j] == UINT)
@@ -78,7 +82,7 @@ static void write_row(FILE *fd, dataframe_t *df, int i)
     for (int j = 0; j < df->nb_columns; j++) {
         print_cell(fd, df, i, j);
         if (j < df->nb_columns - 1)
-            fprintf(fd, ",");
+            fprintf(fd, "%s", df->separator);
         else
             fprintf(fd, "\n");
     }
@@ -92,7 +96,7 @@ int df_write_csv(dataframe_t *df, const char *filename)
         return -1;
     for (int i = 0; i < df->nb_columns; i++)
         if (i < df->nb_columns - 1)
-            fprintf(fd, "%s,", df->column_names[i]);
+            fprintf(fd, "%s%s", df->column_names[i], df->separator);
         else
             fprintf(fd, "%s\n", df->column_names[i]);
     for (int i = 0; i < df->nb_rows; i++)
@@ -135,10 +139,14 @@ dataframe_t *init_new_df(dataframe_t *df, int nb_rows)
     new_df->nb_columns = df->nb_columns;
     new_df->column_names = malloc(sizeof(char *) * df->nb_columns);
     new_df->column_types = malloc(sizeof(column_type_t) * df->nb_columns);
-    new_df->data = malloc(sizeof(void **) * nb_rows);
+    new_df->data = calloc(nb_rows, sizeof(void **));
     for (int i = 0; i < df->nb_columns; i++) {
         new_df->column_names[i] = strdup(df->column_names[i]);
         new_df->column_types[i] = df->column_types[i];
     }
+    if (df->separator)
+        new_df->separator = strdup(df->separator);
+    else
+        new_df->separator = strdup(",");
     return new_df;
 }

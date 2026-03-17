@@ -18,8 +18,10 @@ SRC = src/types.c \
 	src/basics.c \
 	src/sorting.c \
 	src/filter.c \
+	src/aggregation.c \
 	src/transformation.c \
-	src/utilities.c
+	src/utilities.c \
+	src/helper.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -27,6 +29,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	ar rc $(NAME) $(OBJ)
+	ranlib $(NAME)
 
 clean:
 	rm -f $(OBJ)
@@ -34,4 +37,4 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 
-re: fclean all
+re: all clean fclean re

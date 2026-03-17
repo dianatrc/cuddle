@@ -10,8 +10,15 @@
 
 static int is_bool(char *str)
 {
-    if (strcmp(str, "true") == 0 || strcmp(str, "false") == 0)
+    char *tmp = to_lowercase(str);
+
+    if (!tmp)
+        return 0;
+    if (strcmp(tmp, "true") == 0 || strcmp(tmp, "false") == 0) {
+        free(tmp);
         return 1;
+    }
+    free(tmp);
     return 0;
 }
 
@@ -67,13 +74,6 @@ static int is_float(char *str)
     return 0;
 }
 
-static int is_string(char *str)
-{
-    if (!is_uint(str) && !is_float(str) && !is_int(str) && !is_bool(str))
-        return 1;
-    return 0;
-}
-
 column_type_t determine_str_type(char *str)
 {
     if (!str || str[0] == '\0')
@@ -82,13 +82,11 @@ column_type_t determine_str_type(char *str)
         return BOOL;
     if (is_float(str))
         return FLOAT;
-    if (is_int(str))
-        return INT;
     if (is_uint(str))
         return UINT;
-    if (is_string(str))
-        return STRING;
-    return UNDEFINED;
+    if (is_int(str))
+        return INT;
+    return STRING;
 }
 
 static void *convert_to_int(char *str)
@@ -100,7 +98,18 @@ static void *convert_to_int(char *str)
     value = malloc(sizeof(int));
     if (!value)
         return NULL;
-    *value = atoi(str);
+    if (is_int(str) || is_float(str) || is_uint(str)) {
+        *value = atoi(str);
+        return (void *)value;
+    }
+    if (strcmp(str, "true") == 0) {
+        *value = 1;
+    } else if (strcmp(str, "false") == 0) {
+        *value = 0;
+    } else {
+        free(value);
+        return NULL;
+    }
     return (void *)value;
 }
 
@@ -108,7 +117,7 @@ static void *convert_to_float(char *str)
 {
     float *value;
 
-    if (!str || str[0] == '\0')
+    if (!str || str[0] == '\0' || (!is_float(str) && !is_int(str)))
         return NULL;
     value = malloc(sizeof(float));
     if (!value)
@@ -126,10 +135,26 @@ static void *convert_to_bool(char *str)
     value = malloc(sizeof(int));
     if (!value)
         return NULL;
-    if (strcmp(str, "true") == 0)
-        *value = 1;
-    else
-        *value = 0;
+    if (bool_from_str(str, value))
+        return (void *)value;
+    if (is_int(str) || is_float(str)) {
+        *value = (atof(str) != 0);
+        return (void *)value;
+    }
+    free(value);
+    return NULL;
+}
+
+static void *convert_to_uint(char *str)
+{
+    unsigned int *value;
+
+    if (!str || !is_uint(str))
+        return NULL;
+    value = malloc(sizeof(unsigned int));
+    if (!value)
+        return NULL;
+    *value = (unsigned int)atoi(str);
     return (void *)value;
 }
 
@@ -137,8 +162,10 @@ void *convert_to_type(char *str, column_type_t type)
 {
     if (!str)
         return NULL;
-    if (type == INT || type == UINT)
+    if (type == INT)
         return convert_to_int(str);
+    if (type == UINT)
+        return convert_to_uint(str);
     if (type == FLOAT)
         return convert_to_float(str);
     if (type == BOOL)
