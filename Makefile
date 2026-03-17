@@ -14,12 +14,14 @@ LDFLAGS = -lm
 SRC = src/main.c \
 	src/types.c \
 	src/dataframe.c \
-	src/data_manipulation.c \
+	src/rows_and_columns.c \
 	src/basics.c \
 	src/sorting.c \
 	src/filter.c \
-	src/df_utils.c \
-	src/aggregation.c
+	src/aggregation.c \
+	src/transformation.c \
+	src/utilities.c \
+	src/helper.c
 
 OBJ = $(SRC:.c=.o)
 NAME = cuddle

@@ -2,8 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** Cuddle
 ** File description:
-** Main entry point for the
-** cuddle project.
+** Basic functions.
 */
 
 #include "dataframe.h"

@@ -11,20 +11,19 @@
 int main(void)
 {
     dataframe_t *df = df_read_csv("utils/data.csv", ",");
-    dataframe_t *filtered;
-    const char *to_agg[] = {"age", NULL};
-    dataframe_t *grouped;
+    dataframe_t *new_df;
 
     if (!df)
         return 84;
-    filtered = df_filter(df, "age", filter_function);
-    if (df_write_csv(filtered, "filtered.csv") == -1)
+    df_info(df);
+    new_df = df_to_type(df, "score", BOOL);
+    if (new_df == NULL)
+        printf("error convert\n");
+    else
+        df_info(new_df);
+    if (df_write_csv(new_df, "to_type.csv") == -1)
         return 84;
-    grouped = df_groupby(df, "city", to_agg, agg_sum_int);
-    if (df_write_csv(grouped, "grouped.csv") == -1)
-        return 84;
-    free_df(grouped);
-    free_df(df);
-    free_df(filtered);
+    df_free(new_df);
+    df_free(df);
     return 0;
 }
