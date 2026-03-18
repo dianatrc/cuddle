@@ -2,13 +2,12 @@
 ## EPITECH PROJECT, 2026
 ## Cuddle
 ## File description:
-## Makefile for the cuddle bootstrap
+## Makefile for the cuddle project
 ## to handle compilation and cleaning.
 ##
 
 NAME = libcuddle.a
 CC = epiclang
-CPPFLAGS = -I./include
 CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -lm
 
