@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** Cuddle
 ** File description:
-** Helper functions
+** Helper functions.
 */
 
 #include "dataframe.h"
@@ -36,4 +36,22 @@ int bool_from_str(char *str, int *value)
     }
     free(tmp);
     return 0;
+}
+
+void *copy_value(void *value, column_type_t type)
+{
+    int size;
+    void *new;
+
+    if (!value)
+        return NULL;
+    if (type == STRING)
+        return strdup((char *)value);
+    if (type == FLOAT)
+        size = sizeof(float);
+    else
+        size = sizeof(int);
+    new = malloc(size);
+    memcpy(new, value, size);
+    return new;
 }

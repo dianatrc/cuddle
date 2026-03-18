@@ -2,7 +2,7 @@
 ## EPITECH PROJECT, 2026
 ## Cuddle
 ## File description:
-## Makefile for the cuddle bootstrap
+## Makefile for the cuddle project
 ## to handle compilation and cleaning.
 ##
 
@@ -21,7 +21,8 @@ SRC = src/types.c \
 	src/aggregation.c \
 	src/transformation.c \
 	src/utilities.c \
-	src/helper.c
+	src/helper.c \
+	src/join.c
 
 OBJ = $(SRC:.c=.o)
 

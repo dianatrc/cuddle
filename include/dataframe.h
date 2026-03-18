@@ -47,12 +47,6 @@ typedef struct {
     double max;
 } statistics_t;
 
-typedef struct {
-    dataframe_t *df1;
-    dataframe_t *df2;
-    const char *column;
-} join_t;
-
 // types.c
 column_type_t determine_str_type(char *str);
 void *convert_to_type(char *str, column_type_t type);
@@ -103,5 +97,8 @@ void df_free(dataframe_t *df);
 // helper.c
 char *to_lowercase(const char *str);
 int bool_from_str(char *str, int *value);
+void *copy_value(void *value, column_type_t type);
+// join.c
+dataframe_t *df_join(dataframe_t *df1, dataframe_t *df2, const char *column);
 
 #endif
