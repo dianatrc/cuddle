@@ -8,6 +8,7 @@
 
 NAME = libcuddle.a
 CC = epiclang
+CPPFLAGS = -I./include
 CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -lm
 
@@ -20,7 +21,8 @@ SRC = src/types.c \
 	src/aggregation.c \
 	src/transformation.c \
 	src/utilities.c \
-	src/helper.c
+	src/helper.c \
+	src/join.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -43,24 +43,6 @@ dataframe_t *df_apply(dataframe_t *df, const char *column,
     return new_df;
 }
 
-static void *copy_value(void *value, column_type_t type)
-{
-    int size;
-    void *new;
-
-    if (!value)
-        return NULL;
-    if (type == STRING)
-        return strdup((char *)value);
-    if (type == FLOAT)
-        size = sizeof(float);
-    else
-        size = sizeof(int);
-    new = malloc(size);
-    memcpy(new, value, size);
-    return new;
-}
-
 static char *value_to_str(void *value, column_type_t type)
 {
     char buffer[256];
