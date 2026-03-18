@@ -29,7 +29,6 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	ar rc $(NAME) $(OBJ)
-	ranlib $(NAME)
 
 clean:
 	rm -f $(OBJ)
@@ -37,4 +36,4 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 
-re: all clean fclean re
+re: fclean all
