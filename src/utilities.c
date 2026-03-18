@@ -81,6 +81,7 @@ void df_free(dataframe_t *df)
 {
     if (!df)
         return;
+    free(df->separator);
     for (int i = 0; i < df->nb_columns; i++)
         free(df->column_names[i]);
     free(df->column_names);

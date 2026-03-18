@@ -17,8 +17,10 @@ SRC = src/types.c \
 	src/basics.c \
 	src/sorting.c \
 	src/filter.c \
+	src/aggregation.c \
 	src/transformation.c \
-	src/utilities.c
+	src/utilities.c \
+	src/helper.c
 
 OBJ = $(SRC:.c=.o)
 

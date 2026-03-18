@@ -54,7 +54,8 @@ dataframe_shape_t df_shape(dataframe_t *df)
 
 void df_info(dataframe_t *df)
 {
-    char *types[] = {"bool", "int", "uint", "float", "string", "undefined"};
+    char *types[] = {"bool", "int", "unsigned int",
+        "float", "string", "undefined"};
 
     printf("%d columns:\n", df->nb_columns);
     for (int i = 0; i < df->nb_columns; i++) {
