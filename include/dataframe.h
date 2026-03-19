@@ -79,8 +79,7 @@ bool filter_function(void *value);
 dataframe_t *df_filter(dataframe_t *df, const char *column,
     bool (*filter_function)(void *value));
 // aggregation.c
-void *agg_sum_int(void **values, int nb_values);
-void *agg_sum_float(void **values, int nb_values);
+void *agg_func(void **values, int nb_values);
 dataframe_t *df_groupby(dataframe_t *df, const char *aggregate_by,
     const char **to_aggregate, void *(*agg_func)(void **values, int nb_values));
 // transformation.c
