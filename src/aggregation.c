@@ -7,7 +7,7 @@
 
 #include "dataframe.h"
 
-void *agg_sum_int(void **values, int nb_values)
+void *agg_func(void **values, int nb_values)
 {
     int *sum;
 
@@ -20,23 +20,6 @@ void *agg_sum_int(void **values, int nb_values)
     for (int i = 0; i < nb_values; i++) {
         if (values[i])
             *sum += *(int *)values[i];
-    }
-    return (void *)sum;
-}
-
-void *agg_sum_float(void **values, int nb_values)
-{
-    float *sum;
-
-    if (!values || nb_values <= 0)
-        return NULL;
-    sum = malloc(sizeof(float));
-    if (!sum)
-        return NULL;
-    *sum = 0;
-    for (int i = 0; i < nb_values; i++) {
-        if (values[i])
-            *sum += *(float *)values[i];
     }
     return (void *)sum;
 }
@@ -63,6 +46,13 @@ static int are_equals(void *value1, void *value2, column_type_t type)
     return 0;
 }
 
+static void allocate_names_and_types(dataframe_t *new_df, int agg_count)
+{
+    new_df->nb_columns = agg_count + 1;
+    new_df->column_names = malloc(sizeof(char *) * new_df->nb_columns);
+    new_df->column_types = malloc(sizeof(column_type_t) * new_df->nb_columns);
+}
+
 static void init_columns(dataframe_t *new_df, dataframe_t *df,
     const char *group_column, const char **to_aggregate)
 {
@@ -71,11 +61,13 @@ static void init_columns(dataframe_t *new_df, dataframe_t *df,
 
     while (to_aggregate[agg_count])
         agg_count++;
-    new_df->nb_columns = agg_count + 1;
-    new_df->column_names = malloc(sizeof(char *) * new_df->nb_columns);
-    new_df->column_types = malloc(sizeof(column_type_t) * new_df->nb_columns);
+    allocate_names_and_types(new_df, agg_count);
     new_df->column_names[0] = strdup(group_column);
     new_df->column_types[0] = df->column_types[df_index];
+    if (df->separator)
+        new_df->separator = strdup(df->separator);
+    else
+        new_df->separator = strdup(",");
     for (int i = 0; i < agg_count; i++) {
         df_index = get_column_index(df, to_aggregate[i]);
         if (df_index == -1)
@@ -155,7 +147,7 @@ static int collect_values(dataframe_t *df, void **values,
     return n;
 }
 
-static void compute_group(dataframe_t *new_df, dataframe_t *df,
+static void apply_agg(dataframe_t *new_df, dataframe_t *df,
     int *indexes, void *(*agg_func)(void **values, int nb_values))
 {
     void **values = malloc(sizeof(void *) * df->nb_rows);
@@ -196,7 +188,7 @@ dataframe_t *df_groupby(dataframe_t *df, const char *aggregate_by,
         indexes[0] = group_index;
         indexes[1] = get_column_index(df, to_aggregate[i]);
         if (indexes[1] != -1)
-            compute_group(new_df, df, indexes, agg_func);
+            apply_agg(new_df, df, indexes, agg_func);
     }
     return new_df;
 }
