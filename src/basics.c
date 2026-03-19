@@ -63,6 +63,15 @@ void df_info(dataframe_t *df)
     }
 }
 
+static void initialize_stats(statistics_t *stats)
+{
+    stats->count = 0;
+    stats->mean = 0;
+    stats->std = 0;
+    stats->min = 0;
+    stats->max = 0;
+}
+
 static double get_value(void *data, column_type_t type)
 {
     if (type == FLOAT)
@@ -84,9 +93,9 @@ static void calculate_statistics(dataframe_t *df, int col, statistics_t *stats)
     double sq_sum = 0;
     double value;
 
-    stats->count = 0;
+    initialize_stats(stats);
     for (int i = 0; i < df->nb_rows; i++) {
-        if (!df->data[i][col] || ((char *)df->data[i][col])[0] == '\0')
+        if (!df->data[i][col])
             continue;
         value = get_value(df->data[i][col], df->column_types[col]);
         update_min_max(stats, value);
