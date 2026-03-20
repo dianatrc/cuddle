@@ -46,11 +46,16 @@ static int are_equals(void *value1, void *value2, column_type_t type)
     return 0;
 }
 
-static void allocate_names_and_types(dataframe_t *new_df, int agg_count)
+static void allocate_names_and_types(dataframe_t *new_df, dataframe_t *df,
+    int agg_count)
 {
     new_df->nb_columns = agg_count + 1;
-    new_df->column_names = malloc(sizeof(char *) * new_df->nb_columns);
+    new_df->column_names = calloc(new_df->nb_columns, sizeof(char *));
     new_df->column_types = malloc(sizeof(column_type_t) * new_df->nb_columns);
+    if (df->separator)
+        new_df->separator = strdup(df->separator);
+    else
+        new_df->separator = strdup(",");
 }
 
 static void init_columns(dataframe_t *new_df, dataframe_t *df,
@@ -58,22 +63,21 @@ static void init_columns(dataframe_t *new_df, dataframe_t *df,
 {
     int agg_count = 0;
     int df_index = get_column_index(df, group_column);
+    int new_column_index = 1;
 
-    while (to_aggregate[agg_count])
-        agg_count++;
-    allocate_names_and_types(new_df, agg_count);
+    for (int i = 0; to_aggregate[i]; i++)
+        if (get_column_index(df, to_aggregate[i]) != -1)
+            agg_count++;
+    allocate_names_and_types(new_df, df, agg_count);
     new_df->column_names[0] = strdup(group_column);
     new_df->column_types[0] = df->column_types[df_index];
-    if (df->separator)
-        new_df->separator = strdup(df->separator);
-    else
-        new_df->separator = strdup(",");
-    for (int i = 0; i < agg_count; i++) {
+    for (int i = 0; to_aggregate[i]; i++) {
         df_index = get_column_index(df, to_aggregate[i]);
         if (df_index == -1)
             continue;
-        new_df->column_names[i + 1] = strdup(to_aggregate[i]);
-        new_df->column_types[i + 1] = df->column_types[df_index];
+        new_df->column_names[new_column_index] = strdup(to_aggregate[i]);
+        new_df->column_types[new_column_index] = df->column_types[df_index];
+        new_column_index++;
     }
 }
 
@@ -152,13 +156,10 @@ static void apply_agg(dataframe_t *new_df, dataframe_t *df,
 {
     void **values = malloc(sizeof(void *) * df->nb_rows);
     int n = 0;
-    int dest_column = get_column_index(new_df, df->column_names[indexes[1]]);
+    int dest_column = indexes[2];
 
-    if (!values || dest_column == -1) {
-        if (values)
-            free(values);
+    if (!values)
         return;
-    }
     for (int i = 0; i < new_df->nb_rows; i++) {
         n = collect_values(df, values, indexes, new_df->data[i][0]);
         if (n > 0) {
@@ -174,7 +175,7 @@ dataframe_t *df_groupby(dataframe_t *df, const char *aggregate_by,
 {
     dataframe_t *new_df;
     int group_index;
-    int indexes[2];
+    int indexes[3];
 
     if (!df || !aggregate_by || !to_aggregate || !agg_func)
         return NULL;
@@ -187,7 +188,8 @@ dataframe_t *df_groupby(dataframe_t *df, const char *aggregate_by,
     for (int i = 0; to_aggregate[i] != NULL; i++) {
         indexes[0] = group_index;
         indexes[1] = get_column_index(df, to_aggregate[i]);
-        if (indexes[1] != -1)
+        indexes[2] = get_column_index(new_df, to_aggregate[i]);
+        if (indexes[1] != -1 && indexes[2] != -1)
             apply_agg(new_df, df, indexes, agg_func);
     }
     return new_df;
