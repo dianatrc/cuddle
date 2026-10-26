@@ -1,9 +1,9 @@
 # Cuddle
 
-Cuddle is a static library written in **C** that mimics core data manipulation and analysis features inspired by the Python 'pandas' library. It provides a custom, efficient tabular data structure for reading, analyzing, transforming, and exporting CSV datasets directly within C environments.
+Cuddle is a static library written in **C** that mimics core data manipulation and analysis features inspired by the Python `pandas` library. It provides a custom, efficient tabular data structure for reading, analyzing, transforming, and exporting CSV datasets directly within C environments.
 
 # Key Features
-The project is built around a custom 'dataframe_t' structure and offers a complete set of features for working with tabular data:
+The project is built around a custom `dataframe_t` structure and offers a complete set of features for working with tabular data:
 
 **Reading and Writing (I/O):**
 - df_read_csv: reads a CSV file with support for custom separators (default to comma if not specified), automatically detects rows, columns, and figures out the data type for each column (such as numbers, text, or true/false values).
@@ -32,7 +32,7 @@ The project is built around a custom 'dataframe_t' structure and offers a comple
 
 # Error Handling and Robustness
 The library implements strict checks to handle erroneous inputs:
-- Functions safely return 'NULL' upon failure (such as invalid arguments, memory allocation errors, or unparseable formats) to prevent crashes and ensure proper memory control.
+- Functions safely return `NULL` upon failure (such as invalid arguments, memory allocation errors, or unparseable formats) to prevent crashes and ensure proper memory control.
 - Complies with standard error management by handling error outputs and exit codes appropriately (the program exits with the 84 error code, or 0 if there is no error).
 
 # Project Structure
