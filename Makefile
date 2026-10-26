@@ -7,7 +7,7 @@
 ##
 
 NAME = libcuddle.a
-CC = epiclang
+CC = gcc
 CPPFLAGS = -I./include
 CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -lm
